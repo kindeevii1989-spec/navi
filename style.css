@@ -27,15 +27,6 @@ body {
   z-index: 0;
 }
 
-.panel,
-.nav-top,
-.nav-bottom {
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
-}
-
 .panel {
   position: fixed;
   z-index: 1000;
@@ -43,33 +34,12 @@ body {
   top: max(1rem, env(safe-area-inset-top));
   transform: translateX(-50%);
   width: min(92vw, 460px);
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 1rem;
-}
-
-.nav-top,
-.nav-bottom {
-  position: fixed;
-  z-index: 1100;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(92vw, 460px);
-  border-radius: 12px;
-  padding: 0.7rem 0.9rem;
-}
-
-.nav-top {
-  top: max(1rem, env(safe-area-inset-top));
-}
-
-.nav-top p {
-  margin: 0;
-  text-align: center;
-  font-weight: 600;
-}
-
-.nav-bottom {
-  bottom: max(1rem, env(safe-area-inset-bottom));
+  backdrop-filter: blur(8px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
 }
 
 h1 {
@@ -125,22 +95,6 @@ button:disabled {
   cursor: wait;
 }
 
-.route-actions {
-  display: grid;
-  grid-template-columns: 52px 1fr;
-  gap: 0.6rem;
-}
-
-.route-actions .back-btn {
-  padding: 0.75rem 0;
-  font-size: 1.2rem;
-  line-height: 1;
-}
-
-.route-actions .start-btn {
-  font-size: 1rem;
-}
-
 #status {
   min-height: 1.4em;
   margin: 0.75rem 0 0;
@@ -173,22 +127,9 @@ button:disabled {
 }
 
 @media (max-width: 480px) {
-  .panel,
-  .nav-top,
-  .nav-bottom {
-    width: calc(100vw - 1rem);
-  }
-
   .panel {
+    width: calc(100vw - 1rem);
     top: max(0.5rem, env(safe-area-inset-top));
     padding: 0.85rem;
-  }
-
-  .nav-top {
-    top: max(0.5rem, env(safe-area-inset-top));
-  }
-
-  .nav-bottom {
-    bottom: max(0.5rem, env(safe-area-inset-bottom));
   }
 }

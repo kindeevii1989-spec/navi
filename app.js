@@ -7,16 +7,9 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors',
 }).addTo(map);
 
-const buildPanelEl = document.getElementById('buildPanel');
-const navTopBarEl = document.getElementById('navTopBar');
-const navBottomBarEl = document.getElementById('navBottomBar');
 const fromInput = document.getElementById('from');
 const toInput = document.getElementById('to');
 const buildRouteBtn = document.getElementById('buildRouteBtn');
-const routeActionsEl = document.getElementById('routeActions');
-const backBtn = document.getElementById('backBtn');
-const startBtn = document.getElementById('startBtn');
-const finishBtn = document.getElementById('finishBtn');
 const statusEl = document.getElementById('status');
 const summaryEl = document.getElementById('summary');
 const summaryFromEl = document.getElementById('summaryFrom');
@@ -25,50 +18,10 @@ const summaryDistanceEl = document.getElementById('summaryDistance');
 const summaryDurationEl = document.getElementById('summaryDuration');
 
 let routeLine;
-let userMarker;
 
 function setStatus(text, isError = false) {
   statusEl.textContent = text;
   statusEl.classList.toggle('error', isError);
-}
-
-function setRouteReady(isReady) {
-  buildRouteBtn.hidden = isReady;
-  routeActionsEl.hidden = !isReady;
-}
-
-function clearRouteFromMap() {
-  if (routeLine) {
-    map.removeLayer(routeLine);
-    routeLine = null;
-  }
-}
-
-function clearUserMarker() {
-  if (userMarker) {
-    map.removeLayer(userMarker);
-    userMarker = null;
-  }
-}
-
-function enterBuildMode() {
-  buildPanelEl.hidden = false;
-  navTopBarEl.hidden = true;
-  navBottomBarEl.hidden = true;
-  summaryEl.hidden = true;
-  setRouteReady(false);
-}
-
-function resetToInitialState() {
-  clearRouteFromMap();
-  clearUserMarker();
-  enterBuildMode();
-}
-
-function enterNavigationMode() {
-  buildPanelEl.hidden = true;
-  navTopBarEl.hidden = false;
-  navBottomBarEl.hidden = false;
 }
 
 function parseLatLng(value) {
@@ -134,40 +87,17 @@ function formatDuration(seconds) {
   return `${hours} ч ${minutes} мин`;
 }
 
-function requestUserLocation() {
-  if (!navigator.geolocation) {
-    return;
-  }
-
-  navigator.geolocation.getCurrentPosition(
-    ({ coords }) => {
-      const userLatLng = [coords.latitude, coords.longitude];
-      clearUserMarker();
-      userMarker = L.marker(userLatLng).addTo(map);
-      map.setView(userLatLng, Math.max(map.getZoom(), 14));
-    },
-    () => {
-      // Оставляем режим навигации активным, даже если доступ к геолокации не получен.
-    },
-    {
-      enableHighAccuracy: true,
-      timeout: 10000,
-      maximumAge: 0,
-    }
-  );
-}
-
 async function buildRoute() {
   const fromRaw = fromInput.value.trim();
   const toRaw = toInput.value.trim();
 
   if (!fromRaw || !toRaw) {
     setStatus('Введите оба пункта: отправки и назначения.', true);
+    summaryEl.hidden = true;
     return;
   }
 
   buildRouteBtn.disabled = true;
-  setRouteReady(false);
   summaryEl.hidden = true;
   setStatus('Поиск координат и построение маршрута...');
 
@@ -194,7 +124,10 @@ async function buildRoute() {
 
     const latLngs = route.geometry.coordinates.map(([lng, lat]) => [lat, lng]);
 
-    clearRouteFromMap();
+    if (routeLine) {
+      map.removeLayer(routeLine);
+    }
+
     routeLine = L.polyline(latLngs, {
       color: '#2d7dff',
       weight: 5,
@@ -208,33 +141,14 @@ async function buildRoute() {
     summaryDistanceEl.textContent = `${(route.distance / 1000).toFixed(1)} км`;
     summaryDurationEl.textContent = formatDuration(route.duration);
     summaryEl.hidden = false;
-    setRouteReady(true);
 
     setStatus('Маршрут успешно построен.');
   } catch (error) {
     setStatus(error.message || 'Произошла неизвестная ошибка.', true);
     summaryEl.hidden = true;
-    setRouteReady(false);
   } finally {
     buildRouteBtn.disabled = false;
   }
 }
 
 buildRouteBtn.addEventListener('click', buildRoute);
-
-backBtn.addEventListener('click', () => {
-  clearRouteFromMap();
-  summaryEl.hidden = true;
-  setRouteReady(false);
-  setStatus('Режим построения маршрута.');
-});
-
-startBtn.addEventListener('click', () => {
-  enterNavigationMode();
-  requestUserLocation();
-});
-
-finishBtn.addEventListener('click', () => {
-  resetToInitialState();
-  setStatus('Маршрут завершён. Можно построить новый.');
-});
