@@ -10,9 +10,6 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 const fromInput = document.getElementById('from');
 const toInput = document.getElementById('to');
 const buildRouteBtn = document.getElementById('buildRouteBtn');
-const routeActionsEl = document.getElementById('routeActions');
-const backBtn = document.getElementById('backBtn');
-const startBtn = document.getElementById('startBtn');
 const statusEl = document.getElementById('status');
 const summaryEl = document.getElementById('summary');
 const summaryFromEl = document.getElementById('summaryFrom');
@@ -25,24 +22,6 @@ let routeLine;
 function setStatus(text, isError = false) {
   statusEl.textContent = text;
   statusEl.classList.toggle('error', isError);
-}
-
-function setRouteReady(isReady) {
-  buildRouteBtn.hidden = isReady;
-  routeActionsEl.hidden = !isReady;
-}
-
-function clearRouteFromMap() {
-  if (routeLine) {
-    map.removeLayer(routeLine);
-    routeLine = null;
-  }
-}
-
-function resetToEditingMode() {
-  clearRouteFromMap();
-  summaryEl.hidden = true;
-  setRouteReady(false);
 }
 
 function parseLatLng(value) {
@@ -114,12 +93,11 @@ async function buildRoute() {
 
   if (!fromRaw || !toRaw) {
     setStatus('Введите оба пункта: отправки и назначения.', true);
-    resetToEditingMode();
+    summaryEl.hidden = true;
     return;
   }
 
   buildRouteBtn.disabled = true;
-  setRouteReady(false);
   summaryEl.hidden = true;
   setStatus('Поиск координат и построение маршрута...');
 
@@ -146,7 +124,10 @@ async function buildRoute() {
 
     const latLngs = route.geometry.coordinates.map(([lng, lat]) => [lat, lng]);
 
-    clearRouteFromMap();
+    if (routeLine) {
+      map.removeLayer(routeLine);
+    }
+
     routeLine = L.polyline(latLngs, {
       color: '#2d7dff',
       weight: 5,
@@ -160,24 +141,14 @@ async function buildRoute() {
     summaryDistanceEl.textContent = `${(route.distance / 1000).toFixed(1)} км`;
     summaryDurationEl.textContent = formatDuration(route.duration);
     summaryEl.hidden = false;
-    setRouteReady(true);
 
     setStatus('Маршрут успешно построен.');
   } catch (error) {
     setStatus(error.message || 'Произошла неизвестная ошибка.', true);
-    resetToEditingMode();
+    summaryEl.hidden = true;
   } finally {
     buildRouteBtn.disabled = false;
   }
 }
 
 buildRouteBtn.addEventListener('click', buildRoute);
-
-backBtn.addEventListener('click', () => {
-  resetToEditingMode();
-  setStatus('Режим редактирования маршрута.');
-});
-
-startBtn.addEventListener('click', () => {
-  setStatus('Режим навигации будет следующим этапом');
-});
