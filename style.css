@@ -1,0 +1,151 @@
+:root {
+  color-scheme: dark;
+  --bg-panel: rgba(18, 22, 30, 0.9);
+  --border: rgba(255, 255, 255, 0.14);
+  --text: #ffffff;
+  --muted: #b8c1d1;
+  --primary: #2d7dff;
+  --primary-hover: #2469d8;
+  --error: #ff7070;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--text);
+}
+
+#map {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+.panel {
+  position: fixed;
+  z-index: 1000;
+  left: 50%;
+  top: max(1rem, env(safe-area-inset-top));
+  transform: translateX(-50%);
+  width: min(92vw, 460px);
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1rem;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.subtitle {
+  margin: 0.15rem 0 0.85rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+}
+
+input {
+  width: 100%;
+  margin-bottom: 0.8rem;
+  padding: 0.72rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+input::placeholder {
+  color: #9aa6be;
+}
+
+button {
+  width: 100%;
+  border: 0;
+  border-radius: 10px;
+  padding: 0.75rem;
+  background: var(--primary);
+  color: white;
+  font-size: 0.98rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--primary-hover);
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.route-actions {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  gap: 0.6rem;
+}
+
+.route-actions .back-btn {
+  padding: 0.75rem 0;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.route-actions .start-btn {
+  font-size: 1rem;
+}
+
+#status {
+  min-height: 1.4em;
+  margin: 0.75rem 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+#status.error {
+  color: var(--error);
+}
+
+#summary {
+  margin-top: 0.9rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--border);
+}
+
+#summary h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+}
+
+#summary ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.45rem;
+  font-size: 0.92rem;
+}
+
+@media (max-width: 480px) {
+  .panel {
+    width: calc(100vw - 1rem);
+    top: max(0.5rem, env(safe-area-inset-top));
+    padding: 0.85rem;
+  }
+}
