@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Navi — Маршрут</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="map" aria-label="Карта"></div>
+
+    <header id="navTopBar" class="nav-top" hidden>
+      <p>Навигация запущена</p>
+    </header>
+
+    <main id="buildPanel" class="panel" aria-label="Построение маршрута">
+      <h1>Navi</h1>
+      <p class="subtitle">Минимальный построитель маршрута</p>
+
+      <label for="from">Пункт отправки</label>
+      <input id="from" type="text" placeholder="Адрес или lat,lng" autocomplete="off" />
+
+      <label for="to">Пункт назначения</label>
+      <input id="to" type="text" placeholder="Адрес или lat,lng" autocomplete="off" />
+
+      <button id="buildRouteBtn" type="button">Построить маршрут</button>
+
+      <div id="routeActions" class="route-actions" hidden>
+        <button id="backBtn" class="back-btn" type="button" aria-label="Назад">←</button>
+        <button id="startBtn" class="start-btn" type="button">Старт</button>
+      </div>
+
+      <p id="status" role="status" aria-live="polite"></p>
+
+      <section id="summary" hidden>
+        <h2>Сводка маршрута</h2>
+        <ul>
+          <li><strong>Откуда:</strong> <span id="summaryFrom"></span></li>
+          <li><strong>Куда:</strong> <span id="summaryTo"></span></li>
+          <li><strong>Расстояние:</strong> <span id="summaryDistance"></span></li>
+          <li><strong>Время:</strong> <span id="summaryDuration"></span></li>
+        </ul>
+      </section>
+    </main>
+
+    <footer id="navBottomBar" class="nav-bottom" hidden>
+      <button id="finishBtn" type="button">Завершить маршрут</button>
+    </footer>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="app.js"></script>
+  </body>
+</html>
